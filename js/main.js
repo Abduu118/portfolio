@@ -1,3 +1,24 @@
+// Select the custom cursor element
+// const customCursor = document.querySelector('.custom-cursor');
+
+// // Update the custom cursor's position
+// document.addEventListener('mousemove', (event) => {
+//   const { pageX, pageY } = event;
+//   customCursor.style.left = `${pageX}px`;
+//   customCursor.style.top = `${pageY}px`;
+// });
+
+// // Add hover effects for interactive elements
+// document.querySelectorAll('.bites-section').forEach((element) => {
+//   element.addEventListener('mouseenter', () => {
+//     customCursor.classList.add('hover-effect');
+//   });
+
+//   element.addEventListener('mouseleave', () => {
+//     customCursor.classList.remove('hover-effect');
+//   });
+// });
+
 (function ($) {
   "use strict";
 
@@ -66,7 +87,18 @@
 
 
 
-
+  if ($(".clientCarousel").elExists()) {
+    const clientCarousel = new Swiper(".clientCarousel .swiper", {
+      slidesPerView: 1,
+      pagination: false,
+      loop: true,
+      speed: 2000,
+      autoplay: {
+        delay: 2000,
+      },
+      
+    });
+  }
 
   if ($(".brandCarousel").elExists()) {
     const brandCarousel = new Swiper(".brandCarousel .swiper", {
@@ -96,10 +128,38 @@
       },
     });
   }
+  if ($(".card-slider").elExists()) {
+    var cardSlider = new Swiper(".card-slider .swiper", {
+      slidesPerView: "auto", // Multiple slides visible
+      spaceBetween: 20, // Space between slides
+      loop: true, // Infinite loop
+      allowTouchMove: false, // Disable touch/drag interaction
+      speed: 5000, // Smooth transition speed
 
+      autoplay: {
+        delay: 0, // Continuous autoplay
+      },
+    });
 
+    // Select the card-slider element
+    const cardSliderElement = document.querySelector('.card-slider');
 
+    // Function to stop autoplay
+    function stopAutoplay() {
+      const swiperTranslate = Swiper.getTranslate();
+      Swiper.setTranslate(swiperTranslate);
+      Swiper.autoplay.stop();
 
+    }
+    function startAutoplay() {
+      Swiper.slideTo(Swiper.activeIndex, 3000, false);
+      Swiper.autoplay.start();
+    }
+
+    // Add event listeners for hover
+    cardSliderElement.addEventListener("mouseenter", stopAutoplay);
+    cardSliderElement.addEventListener("mouseleave", startAutoplay);
+  }
 
   function Tab() {
     $(".tabs button").on("click", function () {
@@ -279,7 +339,7 @@
 const typedTextSpan = document.querySelector(".typed-text");
 const cursorSpan = document.querySelector(".cursor");
 
-const textArray = ["Look", "Observe", "Analyze", "Design", "Develop"];
+const textArray = ["Look 👁️", "Observe 🌀", "Analyze 🔍", "Design 🖊️", "Develop 👨🏽‍💻"];
 const typingDelay = 200;
 const erasingDelay = 100;
 const newTextDelay = 2000; // Delay between current and next text
@@ -288,32 +348,69 @@ let charIndex = 0;
 
 function type() {
   if (charIndex < textArray[textArrayIndex].length) {
-    if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
+    if (!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
     typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
     charIndex++;
     setTimeout(type, typingDelay);
-  } 
+  }
   else {
     cursorSpan.classList.remove("typing");
-  	setTimeout(erase, newTextDelay);
+    setTimeout(erase, newTextDelay);
   }
 }
 
 function erase() {
-	if (charIndex > 0) {
-    if(!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
-    typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex-1);
+  if (charIndex > 0) {
+    if (!cursorSpan.classList.contains("typing")) cursorSpan.classList.add("typing");
+    typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex - 1);
     charIndex--;
     setTimeout(erase, erasingDelay);
-  } 
+  }
   else {
     cursorSpan.classList.remove("typing");
     textArrayIndex++;
-    if(textArrayIndex>=textArray.length) textArrayIndex=0;
+    if (textArrayIndex >= textArray.length) textArrayIndex = 0;
     setTimeout(type, typingDelay + 1100);
   }
 }
 
-document.addEventListener("DOMContentLoaded", function() { // On DOM Load initiate the effect
-  if(textArray.length) setTimeout(type, newTextDelay + 250);
+document.addEventListener("DOMContentLoaded", function () { // On DOM Load initiate the effect
+  if (textArray.length) setTimeout(type, newTextDelay + 250);
 });
+
+// why it doesn't work on firefox?
+var card = $(".card");
+var heroDiv = document.getElementsByClassName('hero-container');
+
+$(heroDiv).on("mousemove", function (e) {
+  var ax = -($(window).innerWidth() / 2 - e.pageX) / 20;
+  var ay = ($(window).innerHeight() / 2 - e.pageY) / 10;
+  card.attr("style", "transform: rotateY(" + ax + "deg) rotateX(" + ay + "deg);-webkit-transform: rotateY(" + ax + "deg) rotateX(" + ay + "deg);-moz-transform: rotateY(" + ax + "deg) rotateX(" + ay + "deg)");
+  $(this).removeClass('mouse-leave');
+});
+
+
+$(heroDiv).on('mouseleave', function () {
+  $(this).addClass('mouse-leave');
+});
+
+/* JavaScript code */
+document.querySelector('.typed-text').style.cursor = 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT--sekCGSwHnkziFEonNBjmsE10B8OnmWllg&shttps://cdn-icons-png.flaticon.com/512/5993/5993123.png"), auto';
+
+
+// sticky
+
+window.onscroll = function () {
+  myFunction();
+};
+
+const navbar = document.getElementById("navbar-blur");
+const sticky = navbar.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky");
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
